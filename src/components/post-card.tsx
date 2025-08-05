@@ -6,17 +6,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Post } from "@/lib/mock-api"
-import CommentSection from "./comment-section"
+import CommentDialog from "./Comment-Dialog"
 
 interface PostCardProps {
   post: Post
+}
+
+interface Comment {
+  id: number
+  text: string
+  author: string
 }
 
 export default function PostCard({ post }: PostCardProps) {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(post.likes)
   const [commentsCount, setCommentsCount] = useState(post.comments)
-  const [showCommentInput, setShowCommentInput] = useState(false)
+  const [showCommentDialog, setShowCommentDialog] = useState(false)
+  const [comments, setComments] = useState<Comment[]>([])
 
   const handleLike = () => {
     setLiked(!liked)
@@ -24,14 +31,15 @@ export default function PostCard({ post }: PostCardProps) {
   }
 
   const handleCommentClick = () => {
-    setShowCommentInput(!showCommentInput)
+    setShowCommentDialog(true)
   }
 
-  const handleCommentSubmit = (comment: string) => {
-    console.log(`Comment submitted for post ${post.id}: "${comment}"`)
+  const handleAddComment = (text: string) => {
+    setComments(prev => [
+      ...prev,
+      { id: Date.now(), text, author: "You" }
+    ])
     setCommentsCount(commentsCount + 1)
-    setShowCommentInput(false)
-    alert("Comment Posted!") // Using alert for basic feedback
   }
 
   return (
@@ -95,7 +103,12 @@ export default function PostCard({ post }: PostCardProps) {
           <span className="sr-only">Share</span>
         </Button>
       </CardFooter>
-      {showCommentInput && <CommentSection postId={post.id} onCommentSubmit={handleCommentSubmit} />}
+      <CommentDialog
+        open={showCommentDialog}
+        onClose={() => setShowCommentDialog(false)}
+        comments={comments}
+        onAddComment={handleAddComment}
+      />
     </Card>
   )
 }
