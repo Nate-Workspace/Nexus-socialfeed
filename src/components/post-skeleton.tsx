@@ -10,7 +10,7 @@ interface CommentSectionProps {
   onCommentSubmit: (comment: string) => void
 }
 
-export default function CommentSection({ postId, onCommentSubmit }: CommentSectionProps) {
+export default function CommentSection({ onCommentSubmit }: CommentSectionProps) {
   const [commentText, setCommentText] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
