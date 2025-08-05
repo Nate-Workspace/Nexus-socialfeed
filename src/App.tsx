@@ -8,16 +8,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import PostCard from "@/components/post-card"
+import PostComposer from "@/components/post-composer"
+import PostSkeleton from "@/components/post-skeleton"
 import { usePosts } from "@/hooks/use-posts"
 import type { Post } from "@/lib/mock-api"
 import { cn } from "@/lib/utils"
 
 interface SidebarProps {
   children: React.ReactNode
+  onNewPostClick: () => void 
   mainRef: React.RefObject<HTMLElement | null>
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ children, mainRef }) => {
+const Sidebar: React.FC<SidebarProps> = ({ children, onNewPostClick, mainRef }) => {
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -80,6 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, mainRef }) => {
           <div className="mt-auto pt-4">
             <Button
               className={cn("w-full justify-start gap-3", !isOpen && "justify-center")}
+              onClick={onNewPostClick} 
             >
               <Plus className="h-5 w-5" />
               {isOpen && <span>New Post</span>}
@@ -126,6 +130,7 @@ export default function App() {
   const { posts, loading, hasMore, initialLoad, loadMorePosts } = usePosts()
   const lastPostRef = useRef<HTMLDivElement>(null)
   const mainContentRef = useRef<HTMLElement>(null) // Ref for the main scrollable area
+  const [isComposerOpen, setIsComposerOpen] = useState(false) 
 
   useEffect(() => {
     initialLoad()
@@ -163,15 +168,18 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen w-full">
-      <Sidebar mainRef={mainContentRef}>
+      <Sidebar onNewPostClick={() => setIsComposerOpen(true)} mainRef={mainContentRef}>
         <div className="mx-auto max-w-2xl space-y-4">
+          <PostComposer isOpen={isComposerOpen} onClose={() => setIsComposerOpen(false)} />
           <Separator className="my-4" />
           {posts.map((post: Post) => (
             <PostCard key={post.id} post={post} />
           ))}
           {loading && (
             <>
-              Loading...
+              <PostSkeleton onCommentSubmit={() => {}} />
+              <PostSkeleton onCommentSubmit={() => {}}/>
+              <PostSkeleton onCommentSubmit={() => {}}/>
             </>
           )}
           {!loading && hasMore && (
