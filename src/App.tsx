@@ -47,10 +47,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children, onNewPostClick, mainRef }) 
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 flex flex-col border-r bg-background transition-all duration-300 ease-in-out",
+          "fixed inset-y-0 left-0 z-30 flex flex-col border-r bg-background transition-all duration-300 ease-in-out scroll-none",
           isOpen ? "w-64" : "w-16",
-          isMobile && (isOpen ? "w-64" : "w-0 overflow-hidden"),
-          "md:relative md:flex md:shrink-0",
+          isMobile && (isOpen ? "w-64" : "w-0 overflow-hidden")
         )}
       >
         <div className="flex h-16 items-center justify-center p-4">
